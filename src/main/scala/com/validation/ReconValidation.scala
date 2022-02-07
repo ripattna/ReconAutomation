@@ -36,6 +36,7 @@ class ReconValidation extends Step {
       .withColumn("Column_Name", monotonically_increasing_id())
     resultDF
   }
+
   /**
    * Will join source and target dataframe inorder to get the extra records in source and target
    * @param joinType type of the join(left_anti)
@@ -45,10 +46,12 @@ class ReconValidation extends Step {
    * @param primaryKey PrimaryKey of the source & Target it could be more than 1
    * @return  DataFrame
    */
-  def joinDF(joinType: String,columns: List[String],sourceDF: DataFrame,targetDF: DataFrame,primaryKey: List[String]): DataFrame ={
-    val resultSet = columns.map( (i => sourceDF.join(targetDF, primaryKey:+i, joinType).agg(sum(i).as(i))
-      .na.fill(0)
-      .withColumn("Column_Name", monotonically_increasing_id())))
+  def joinDF(joinType: String, columns: List[String], sourceDF: DataFrame, targetDF: DataFrame
+             , primaryKey: List[String]): DataFrame = {
+    val resultSet = columns
+      .map( (i => sourceDF.join(targetDF, primaryKey:+i, joinType).agg(sum(i).as(i))
+        .na.fill(0)
+        .withColumn("Column_Name", monotonically_increasing_id())))
       .reduce((x, y) => x.join(y,"Column_Name"))
     resultSet
   }

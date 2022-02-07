@@ -45,6 +45,7 @@ class ReconAutomation{
       .withColumn("Column_Name", monotonically_increasing_id())
     resultDF
   }
+
   /**
    * Will join source and target dataframe inorder to get the extra records in source and target
    * @param joinType type of the join(left_anti)
@@ -54,10 +55,12 @@ class ReconAutomation{
    * @param primaryKey PrimaryKey of the source & Target it could be more than 1
    * @return  DataFrame
    */
-  def joinDF(joinType: String,columns: List[String],sourceDF: DataFrame,targetDF: DataFrame,primaryKey: List[String]): DataFrame ={
-    val resultSet = columns.map( (i => sourceDF.join(targetDF, primaryKey:+i, joinType).agg(sum(i).as(i))
-      .na.fill(0)
-      .withColumn("Column_Name", monotonically_increasing_id())))
+  def joinDF(joinType: String, columns: List[String], sourceDF: DataFrame, targetDF: DataFrame
+             , primaryKey: List[String]): DataFrame = {
+    val resultSet = columns
+      .map( (i => sourceDF.join(targetDF, primaryKey:+i, joinType).agg(sum(i).as(i))
+        .na.fill(0)
+        .withColumn("Column_Name", monotonically_increasing_id())))
       .reduce((x, y) => x.join(y,"Column_Name"))
     resultSet
   }
@@ -116,31 +119,44 @@ object ReconAutomationObject {
 
     val sourceRowCount = new ReconAutomation().rowsCount(sourceDF, columnToSelect)
     // sourceRowCount.show()
+
     val targetRowCount = new ReconAutomation().rowsCount(targetDF, columnToSelect)
     // targetRowCount.show()
 
     // Overlap Records
-    val overlapRowCount = new ReconAutomation().joinDF("inner", columnToSelect, sourceDF, targetDF, primaryKeyList)
+    val overlapRowCount = new ReconAutomation()
+      .joinDF("inner", columnToSelect, sourceDF, targetDF, primaryKeyList)
     // overlapRowCount.show()
 
     // Extra Records in Source
-    val extraSourceRowCount = new ReconAutomation().joinDF("left_anti", columnToSelect, sourceDF, targetDF, primaryKeyList)
+    val extraSourceRowCount = new ReconAutomation()
+      .joinDF("left_anti", columnToSelect, sourceDF, targetDF, primaryKeyList)
     // extraSourceRowCount.show()
 
     // Extra Records in Target
-    val extraTargetRowCount = new ReconAutomation().joinDF("left_anti",  columnToSelect, targetDF, sourceDF, primaryKeyList)
+    val extraTargetRowCount = new ReconAutomation()
+      .joinDF("left_anti",  columnToSelect, targetDF, sourceDF, primaryKeyList)
     // extraTargetRowCount.show()
 
     // Transpose the result
-    val sourceRowsCount = new ReconAutomation().TransposeDF(sourceRowCount, columnToSelect, "Column_Name")
+    val sourceRowsCount = new ReconAutomation()
+      .TransposeDF(sourceRowCount, columnToSelect, "Column_Name")
       .withColumnRenamed("0","No_Of_Rec_Source")
-    val targetRowsCount = new ReconAutomation().TransposeDF(targetRowCount, columnToSelect, "Column_Name")
+
+    val targetRowsCount = new ReconAutomation()
+      .TransposeDF(targetRowCount, columnToSelect, "Column_Name")
       .withColumnRenamed("0","No_Of_Rec_Target")
-    val overlapRowsCount = new ReconAutomation().TransposeDF(overlapRowCount, columnToSelect, "Column_Name")
+
+    val overlapRowsCount = new ReconAutomation()
+      .TransposeDF(overlapRowCount, columnToSelect, "Column_Name")
       .withColumnRenamed("0","Overlap_Count")
-    val extraSourceRowsCount = new ReconAutomation().TransposeDF(extraSourceRowCount, columnToSelect, "Column_Name")
+
+    val extraSourceRowsCount = new ReconAutomation()
+      .TransposeDF(extraSourceRowCount, columnToSelect, "Column_Name")
       .withColumnRenamed("0","Extra_Rec_Source")
-    val extraTargetRowsCount = new ReconAutomation().TransposeDF(extraTargetRowCount, columnToSelect, "Column_Name")
+
+    val extraTargetRowsCount = new ReconAutomation()
+      .TransposeDF(extraTargetRowCount, columnToSelect, "Column_Name")
       .withColumnRenamed("0","Extra_Rec_Target")
 
     // Final Result DF
