@@ -8,7 +8,7 @@ object ReconObject{
   def main(args: Array[String]): Unit = {
 
     // Reading the conf file
-    val applicationConf: Config = ConfigFactory.load("application.conf")
+    val applicationConf: Config = ConfigFactory.load("Config/application.conf")
 
     // Reading the Spark Environment
     val masterEnv: String = applicationConf.getString("sparkEnvironment.master")
