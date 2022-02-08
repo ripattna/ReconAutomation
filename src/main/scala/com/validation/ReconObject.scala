@@ -43,29 +43,39 @@ object ReconObject{
     // targetRowCount.show()
 
     // Overlap Records
-    val overlapRowCount = new ReconValidation().joinDF("inner", columnToSelect, sourceDF, targetDF, primaryKeyList)
+    val overlapRowCount = new ReconValidation()
+      .joinDF("inner", columnToSelect, sourceDF, targetDF, primaryKeyList)
     // overlapRowCount.show()
+
     // Extra Records in Source
-    val extraSourceRowCount = new ReconValidation().joinDF("left_anti", columnToSelect, sourceDF, targetDF, primaryKeyList)
+    val extraSourceRowCount = new ReconValidation()
+      .joinDF("left_anti", columnToSelect, sourceDF, targetDF, primaryKeyList)
     // extraSourceRowCount.show()
+
     // Extra Records in Target
-    val extraTargetRowCount = new ReconValidation().joinDF("left_anti",  columnToSelect, targetDF, sourceDF, primaryKeyList)
+    val extraTargetRowCount = new ReconValidation()
+      .joinDF("left_anti",  columnToSelect, targetDF, sourceDF, primaryKeyList)
     // extraTargetRowCount.show()
 
     // Transpose the result
-    val sourceRowsCount = new ReconValidation().TransposeDF(sourceRowCount, columnToSelect, "Column_Name")
+    val sourceRowsCount = new ReconValidation()
+      .TransposeDF(sourceRowCount, columnToSelect, "Column_Name")
       .withColumnRenamed("0","No_Of_Rec_Source")
 
-    val targetRowsCount = new ReconValidation().TransposeDF(targetRowCount, columnToSelect, "Column_Name")
+    val targetRowsCount = new ReconValidation()
+      .TransposeDF(targetRowCount, columnToSelect, "Column_Name")
       .withColumnRenamed("0","No_Of_Rec_Target")
 
-    val overlapRowsCount = new ReconValidation().TransposeDF(overlapRowCount, columnToSelect, "Column_Name")
+    val overlapRowsCount = new ReconValidation()
+      .TransposeDF(overlapRowCount, columnToSelect, "Column_Name")
       .withColumnRenamed("0","Overlap_Count")
 
-    val extraSourceRowsCount = new ReconValidation().TransposeDF(extraSourceRowCount, columnToSelect, "Column_Name")
+    val extraSourceRowsCount = new ReconValidation()
+      .TransposeDF(extraSourceRowCount, columnToSelect, "Column_Name")
       .withColumnRenamed("0","Extra_Rec_Source")
 
-    val extraTargetRowsCount = new ReconValidation().TransposeDF(extraTargetRowCount, columnToSelect, "Column_Name")
+    val extraTargetRowsCount = new ReconValidation()
+      .TransposeDF(extraTargetRowCount, columnToSelect, "Column_Name")
       .withColumnRenamed("0","Extra_Rec_Target")
 
     // Final Result DF
