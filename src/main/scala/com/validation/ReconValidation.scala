@@ -1,7 +1,7 @@
 package com.validation
 
-import org.apache.spark.sql.functions.{col, collect_list, concat_ws, monotonically_increasing_id, sum}
-import org.apache.spark.sql.{DataFrame, _}
+import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions._
 
 class ReconValidation extends Step {
 

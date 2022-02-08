@@ -90,22 +90,22 @@ object ReconAutomationObject {
   def main(args:Array[String]){
 
     // Reading the conf file
-    val applicationConf: Config = ConfigFactory.load("Config/application.conf")
+    val config: Config = ConfigFactory.load("Config/application.conf")
 
     // Reading the source and target file from config
-    val sourcePath: String = applicationConf.getString("filePath.sourceFile")
-    val targetPath: String = applicationConf.getString("filePath.targetFile")
+    val sourcePath: String = config.getString("filePath.sourceFile")
+    val targetPath: String = config.getString("filePath.targetFile")
 
     // Reading the file format from config
-    val fileType: String = applicationConf.getString("fileFormat.fileType")
+    val fileFormat: String = config.getString("fileFormat.fileFormat")
 
     // Reading the PrimaryKey from config
-    val primaryKeyList = applicationConf.getStringList("primaryKey.primaryKeyValue").toList
+    val primaryKeyList = config.getStringList("primaryKey.primaryKeyValue").toList
 
-    val sourceDF = new ReconAutomation().readFile(fileType, sourcePath)
+    val sourceDF = new ReconAutomation().readFile(fileFormat, sourcePath)
     println("Source Data:")
     sourceDF.show()
-    val targetDF = new ReconAutomation().readFile(fileType, targetPath)
+    val targetDF = new ReconAutomation().readFile(fileFormat, targetPath)
     println("Target Data:")
     targetDF.show()
 

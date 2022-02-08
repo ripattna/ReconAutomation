@@ -8,25 +8,25 @@ object ReconObject{
   def main(args: Array[String]): Unit = {
 
     // Reading the conf file
-    val applicationConf: Config = ConfigFactory.load("Config/application.conf")
+    val config: Config = ConfigFactory.load("Config/application.conf")
 
     // Reading the Spark Environment
-    val masterEnv: String = applicationConf.getString("sparkEnvironment.master")
-    val appName: String = applicationConf.getString("sparkEnvironment.appName")
+    val masterEnv: String = config.getString("sparkEnvironment.master")
+    val appName: String = config.getString("sparkEnvironment.appName")
 
     // Reading the source and target file from config
-    val sourcePath: String = applicationConf.getString("filePath.sourceFile")
-    val targetPath: String = applicationConf.getString("filePath.targetFile")
+    val sourcePath: String = config.getString("filePath.sourceFile")
+    val targetPath: String = config.getString("filePath.targetFile")
 
     // Reading the file format from config
-    val fileType: String = applicationConf.getString("fileFormat.fileType")
+    val fileFormat: String = config.getString("fileFormat.fileFormat")
 
     // Reading the PrimaryKey from config
-    val primaryKeyList = applicationConf.getStringList("primaryKey.primaryKeyValue").toList
+    val primaryKeyList = config.getStringList("primaryKey.primaryKeyValue").toList
 
-    val sourceDF = new ReconValidation().readFile(fileType, sourcePath)
+    val sourceDF = new ReconValidation().readFile(fileFormat, sourcePath)
     sourceDF.show()
-    val targetDF = new ReconValidation().readFile(fileType, targetPath)
+    val targetDF = new ReconValidation().readFile(fileFormat, targetPath)
     targetDF.show()
 
     // Schema of Source Data in List
@@ -60,23 +60,23 @@ object ReconObject{
     // Transpose the result
     val sourceRowsCount = new ReconValidation()
       .TransposeDF(sourceRowCount, columnToSelect, "Column_Name")
-      .withColumnRenamed("0","No_Of_Rec_Source")
+      .withColumnRenamed("0","Source_Rec_Count")
 
     val targetRowsCount = new ReconValidation()
       .TransposeDF(targetRowCount, columnToSelect, "Column_Name")
-      .withColumnRenamed("0","No_Of_Rec_Target")
+      .withColumnRenamed("0","Target_Rec_Count")
 
     val overlapRowsCount = new ReconValidation()
       .TransposeDF(overlapRowCount, columnToSelect, "Column_Name")
-      .withColumnRenamed("0","Overlap_Count")
+      .withColumnRenamed("0","Overlap_Rec_Count")
 
     val extraSourceRowsCount = new ReconValidation()
       .TransposeDF(extraSourceRowCount, columnToSelect, "Column_Name")
-      .withColumnRenamed("0","Extra_Rec_Source")
+      .withColumnRenamed("0","Source_Extra_Rec_Count")
 
     val extraTargetRowsCount = new ReconValidation()
       .TransposeDF(extraTargetRowCount, columnToSelect, "Column_Name")
-      .withColumnRenamed("0","Extra_Rec_Target")
+      .withColumnRenamed("0","Target_Extra_Rec_Count")
 
     // Final Result DF
     val finalDF = sourceRowsCount
